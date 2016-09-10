@@ -20,8 +20,8 @@
     
     
     UICollectionView * cv = [UICollectionView createForFlowLayout];
-    [cv qw_addWidget:nil];
-    [cv qw_addWidget:nil];
+//    [cv qw_addWidget:nil];
+//    [cv qw_addWidget:nil];
     
     
     // Do any additional setup after loading the view, typically from a nib.
