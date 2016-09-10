@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "QLXWidget.h"
+#import "UICollectionView+QLX.h"
 
 
 @interface UICollectionView(QLXWidget)

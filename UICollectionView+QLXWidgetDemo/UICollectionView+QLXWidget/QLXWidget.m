@@ -8,6 +8,7 @@
 
 #import "QLXWidget.h"
 #import "QWMacros.h"
+#import "UICollectionView+QLX.h"
 
 @interface QLXWidget()
 

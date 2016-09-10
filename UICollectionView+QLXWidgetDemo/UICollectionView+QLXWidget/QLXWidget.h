@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 typedef enum : NSUInteger {
     QLXWidgetStateDefault,      // 正常状态

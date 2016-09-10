@@ -14,7 +14,6 @@
 
 
 
-
 @interface UICollectionView()
 
 @property (nonatomic, strong)  NSMutableArray * qw_widgets;

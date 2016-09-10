@@ -19,7 +19,7 @@
     self.view.backgroundColor = [UIColor redColor];
     
     
-    UICollectionView * cv = [UICollectionView createForFlowLayout];
+   // UICollectionView * cv = [UICollectionView createForFlowLayout];
 //    [cv qw_addWidget:nil];
 //    [cv qw_addWidget:nil];
     
