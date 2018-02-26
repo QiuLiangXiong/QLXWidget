@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NSObject+View.h"
-#import "UICollectionReusableView+QLX.h"
-#import "UICollectionViewCell+QLX.h"
+#import "QLXSectionData.h"
+#import "NSObject+QLXView.h"
+#import "UIView+QLX.h"
+#import "UIView+QLXCellDelegate.h"
+#import "NSMutableArray+QLX.h"
+#import "UICollectionViewCell+QLXEdit.h"
+
 
 @protocol QLXCollectionViewDataSource;
 
@@ -20,7 +24,7 @@
 /**
  *  便利构造  产生一个默认系统流布局初始化的UICollectionView对象
  */
-+(instancetype) createForFlowLayout;
++ (instancetype) qlx_createForFlowLayout;
 
 
 @end
@@ -30,14 +34,6 @@
 
 @required
 
-- (NSArray *)qlx_cellDataListWithCollectionView:(UICollectionView *) collectionView;
-
-@optional
-
-- (NSArray *)qlx_headerDataListWithCollectionView:(UICollectionView *) collectionView;
-
-- (NSArray *)qlx_footerDataListWithCollectionView:(UICollectionView *) collectionView;
-
-- (NSArray<Class> *)qlx_decorationViewClassListWithCollectionView:(UICollectionView *)collectionView;
+- (NSArray<QLXSectionData *> *)qlx_sectionDataListWithCollectionView:(UICollectionView *) collectionView;
 
 @end

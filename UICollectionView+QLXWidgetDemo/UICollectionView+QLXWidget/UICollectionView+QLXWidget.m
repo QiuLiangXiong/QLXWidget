@@ -14,14 +14,11 @@
 
 
 
-@interface UICollectionView()
+@interface UICollectionView()<QLXCollectionViewDataSource>
 
-@property (nonatomic, strong)  NSMutableArray * qw_widgets;
+@property (nonatomic, strong)  NSMutableArray<QLXWidget *> * qw_widgets;
 
-@property (nonatomic, strong)  NSMutableArray * qw_headerDataList;
-@property (nonatomic, strong)  NSMutableArray * qw_cellDataList;
-@property (nonatomic, strong)  NSMutableArray * qw_footerDataList;
-@property (nonatomic , strong) NSMutableArray * qw_decorationViewClassList;
+@property(nullable, nonatomic, strong) NSMutableArray<QLXSectionData *> * qw_sourceDataList;
 
 
 
@@ -32,40 +29,20 @@
 
 
 #pragma mark - QLXCollectionViewDataSource
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-- (NSArray *)qlx_headerDataListWithCollectionView:(UICollectionView *) collectionView{
-    return self.qw_headerDataList;
+- (NSArray<QLXSectionData *> *)qlx_sectionDataListWithCollectionView:(UICollectionView *)collectionView{
+    return self.qw_sourceDataList;
 }
-
-- (NSArray *)qlx_cellDataListWithCollectionView:(UICollectionView *) collectionView{
-    return self.qw_cellDataList;
-}
-
-- (NSArray *)qlx_footerDataListWithCollectionView:(UICollectionView *) collectionView{
-    return self.qw_footerDataList;
-}
-
-- (NSArray<Class> *)qlx_decorationViewClassListWithCollectionView:(UICollectionView *)collectionView{
-    return self.qw_decorationViewClassList;
-}
+#pragma clang diagnostic pop
 
 
 #pragma mark - public
 
 -(void) qw_reloadWidgets{
-    if (self.qw_state != QLXWidgetStateRequestFail) {
-        [self.qw_headerDataList removeAllObjects];
-        [self.qw_cellDataList removeAllObjects];
-        [self.qw_footerDataList removeAllObjects];
-        [self.qw_decorationViewClassList removeAllObjects];
-        for (QLXWidget * widget in self.qw_widgets) {
-            [self.qw_headerDataList addObjectsFromArray:widget.headerDataList];
-            [self.qw_cellDataList addObjectsFromArray:widget.multiCellDataList];
-            [self.qw_footerDataList addObjectsFromArray:widget.footerDataList];
-            [self.qw_decorationViewClassList addObjectsFromArray:widget.decorationViewClassList];
-        }
-        [self reloadData];
-    }
+    [self qw_syncToDataSource];
+    [self reloadData];
 }
 
 
@@ -91,7 +68,24 @@
 
 
 -(void) qw_reloadWidget:(QLXWidget *)widget{
-    [self qw_reloadWidgets];
+//    [self qw_reloadWidgets];
+    
+    if ([widget isKindOfClass:[QLXWidget class]]) {
+        [self qw_syncToDataSource];
+        NSArray * widgetSections = widget.multiSections.count ? widget.multiSections : @[widget.sectionData];
+        
+        if (self.qw_sourceDataList.count) {
+            NSInteger index = [self.qw_sourceDataList indexOfObject:widgetSections.firstObject];
+            if (index >= 0 && index < self.qw_sourceDataList.count) {
+                [self reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, widgetSections.count)]];
+            }
+        }else {
+            [self reloadData];
+        }
+        
+    }
+    
+    
 }
 
 
@@ -173,13 +167,23 @@
 
 #pragma mark - private
 
--(void) qw_delayReload{
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadData) object:nil];
+- (void)qw_delayReload{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(qw_reloadWidgets) object:nil];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadAllWidgetsIfNeed) object:nil];
-    [self performSelector:@selector(reloadData) withObject:nil afterDelay:0];
+    [self performSelector:@selector(qw_reloadWidgets) withObject:nil afterDelay:0];
 }
 
-
+- (void)qw_syncToDataSource{
+    NSMutableArray * list = [NSMutableArray new];
+    for (QLXWidget * widget in self.qw_widgets) {
+        if (widget.multiSections && widget.multiSections.count > 0) {
+            [list addObjectsFromArray:widget.multiSections];
+        }else if(widget.sectionData){
+            [list addObject:widget.sectionData];
+        }
+    }
+    self.qw_sourceDataList = list;
+}
 
 
 /**
@@ -187,7 +191,7 @@
  */
 - (void)qw_requestFinish{
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadAllWidgetsIfNeed) object:nil];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reloadData) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(qw_reloadWidgets) object:nil];
     [self performSelector:@selector(reloadAllWidgetsIfNeed) withObject:nil afterDelay:0];
 }
 
@@ -205,64 +209,8 @@
     }
 }
 
-#pragma mark - getter setter
 
-- (NSMutableArray *)qw_headerDataList{
-    NSMutableArray * list = objc_getAssociatedObject(self, @selector(qw_headerDataList));
-    if (!list) {
-        list = [NSMutableArray new];
-        objc_setAssociatedObject(self, @selector(qw_headerDataList), list, OBJC_ASSOCIATION_RETAIN);
-    }
-    return list;
-}
-
-
-- (void)setQw_headerDataList:(NSMutableArray *)qw_headerDataList{
-    objc_setAssociatedObject(self, @selector(qw_headerDataList), qw_headerDataList, OBJC_ASSOCIATION_RETAIN);
-}
-
-- (NSMutableArray *)qw_footerDataList{
-    NSMutableArray * list = objc_getAssociatedObject(self, @selector(qw_footerDataList));
-    if (!list) {
-        list = [NSMutableArray new];
-        objc_setAssociatedObject(self, @selector(qw_footerDataList), list, OBJC_ASSOCIATION_RETAIN);
-    }
-    return list;
-}
-
-- (void)setQw_footerDataList:(NSMutableArray *)qw_footerDataList{
-    objc_setAssociatedObject(self, @selector(qw_footerDataList), qw_footerDataList, OBJC_ASSOCIATION_RETAIN);
-}
-
-- (NSMutableArray *)qw_cellDataList{
-    NSMutableArray * list = objc_getAssociatedObject(self, @selector(qw_cellDataList));
-    if (!list) {
-        list = [NSMutableArray new];
-        objc_setAssociatedObject(self, @selector(qw_cellDataList), list, OBJC_ASSOCIATION_RETAIN);
-    }
-    return list;
-}
-
-- (void)setQw_cellDataList:(NSMutableArray *)qw_cellDataList{
-    objc_setAssociatedObject(self, @selector(qw_cellDataList), qw_cellDataList, OBJC_ASSOCIATION_RETAIN);
-}
-
-
-- (NSMutableArray *)qw_decorationViewClassList{
-    NSMutableArray * list = objc_getAssociatedObject(self, @selector(qw_decorationViewClassList));
-    if (!list) {
-        list = [NSMutableArray new];
-        objc_setAssociatedObject(self, @selector(qw_decorationViewClassList), list, OBJC_ASSOCIATION_RETAIN);
-    }
-    return list;
-}
-
-- (void)setQw_decorationViewClassList:(NSMutableArray *)qw_decorationViewClassList{
-    objc_setAssociatedObject(self, @selector(qw_decorationViewClassList), qw_decorationViewClassList, OBJC_ASSOCIATION_RETAIN);
-}
-
-
-- (NSMutableArray *)qw_widgets{
+- (NSMutableArray<QLXWidget *> *)qw_widgets{
     NSMutableArray * widgets = objc_getAssociatedObject(self, @selector(qw_widgets));
     if (!widgets) {
         widgets = [NSMutableArray new];

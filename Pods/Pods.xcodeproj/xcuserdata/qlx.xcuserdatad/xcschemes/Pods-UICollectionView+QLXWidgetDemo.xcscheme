@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '57C6D17309B0667DE2C87D5A4919AF3A'
+               BlueprintIdentifier = 'C1EC58BCB8EEB170C6A62989F0D46AE8'
                BlueprintName = 'Pods-UICollectionView+QLXWidgetDemo'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libPods-UICollectionView+QLXWidgetDemo.a'>

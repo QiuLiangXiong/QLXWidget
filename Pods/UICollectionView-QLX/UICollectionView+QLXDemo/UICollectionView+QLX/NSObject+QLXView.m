@@ -6,14 +6,14 @@
 //  Copyright © 2016年 QLX. All rights reserved.
 //
 
-#import "NSObject+View.h"
+#import "NSObject+QLXView.h"
 #import <objc/runtime.h>
 #import "QMacros.h"
 
 
-@implementation NSObject(View)
+@implementation NSObject(QLXView)
 
-#pragma mark - publick
+#pragma mark - public
 
 -(void)qlx_viewSizeChanged{
     self.qlx_viewWidth = 0;
@@ -32,6 +32,12 @@
     objc_setAssociatedObject(self, @selector(qlx_reuseIdentifierClass), qlx_reuseIdentifierClass, OBJC_ASSOCIATION_ASSIGN);
 }
 
+
+#pragma mark QLXDiffable implementation
+
+- (BOOL)qlx_isEqualToObject:(id<QLXDiffable>)object{
+    return self == object;
+}
 
 #pragma mark - getter setter
 
@@ -84,6 +90,15 @@
 -(void)setQlx_minimumLineSpacing:(CGFloat)minimumLineSpacing{
     NSNumber * spacing = [NSNumber numberWithFloat:minimumLineSpacing];
     objc_setAssociatedObject(self, @selector(qlx_minimumLineSpacing), spacing, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (BOOL)qlx_resortEnable{
+     NSNumber * resortEnable = objc_getAssociatedObject(self, @selector(qlx_resortEnable));
+    return [resortEnable boolValue];
+}
+
+- (void)setQlx_resortEnable:(BOOL)qlx_resortEnable{
+     objc_setAssociatedObject(self, @selector(qlx_resortEnable), @(qlx_resortEnable), OBJC_ASSOCIATION_RETAIN);
 }
 
 @end

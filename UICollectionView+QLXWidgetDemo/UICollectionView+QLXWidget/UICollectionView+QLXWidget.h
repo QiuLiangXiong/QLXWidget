@@ -18,26 +18,26 @@
 /**
  *  头部刷新时 调用此方法
  */
--(void)qw_collectionViewHeaderRefresh;
+- (void)qw_collectionViewHeaderRefresh;
 /**
  *  尾部刷新时 调用此方法
  */
--(void)qw_collectionViewFooterRefresh;
+- (void)qw_collectionViewFooterRefresh;
 
 /**
  *  结束刷新  务必重写
  */
--(void) qw_endRefreshingWithWidgetState:(QLXWidgetState)state;
+- (void) qw_endRefreshingWithWidgetState:(QLXWidgetState)state;
 
 /**
  *  刷新所有部件
  */
--(void) qw_reloadWidgets;
+- (void) qw_reloadWidgets;
 
 /**
  *  刷新部件
  */
--(void) qw_reloadWidget:(QLXWidget *)widget;
+- (void) qw_reloadWidget:(QLXWidget *)widget;
 
 /**
  *  添加一个部件

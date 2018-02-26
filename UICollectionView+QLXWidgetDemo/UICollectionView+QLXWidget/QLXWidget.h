@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "UICollectionView+QLX.h"
+
 
 typedef enum : NSUInteger {
     QLXWidgetStateDefault,      // 正常状态
@@ -20,36 +22,30 @@ typedef enum : NSUInteger {
 
 @interface QLXWidget : NSObject
 
-@property (nonatomic , weak , readonly)  UICollectionView * collectionView;
+@property (nonatomic , weak , readonly)  UICollectionView *  _Nullable  collectionView;
 
 @property (nonatomic , assign ,readonly)  QLXWidgetState state; // 当前请求状态
 
 
 /**
- *  一个secion时候设置
+ *  一个secion的时候设置
  */
-@property (nonatomic , strong , nullable) NSObject * headerData; // 头部视图数据
-@property (nonatomic , strong , nullable) NSMutableArray * cellDataList; // cell视图模型数组
-@property (nonatomic , strong , nullable) NSObject * footerData;       // 尾部视图模型
-@property (nonatomic , copy , nullable)   Class decorationViewClass; // 修视背景图类
+@property(nullable, nonatomic, strong) QLXSectionData * sectionData;
 
 /**
- *  多个secion时候设置
+ *  多个secion的时候设置
  */
-@property(nonatomic , strong , nullable) NSMutableArray * headerDataList;
-@property(nonatomic , strong , nullable) NSMutableArray< NSMutableArray * > * multiCellDataList;
-@property(nonatomic , strong , nullable) NSMutableArray * footerDataList;
-@property(nonatomic , strong , nullable) NSMutableArray<Class> * decorationViewClassList;
+@property(nullable, nonatomic, strong) NSMutableArray<QLXSectionData *> * multiSections;
 
 /**
  *  头部刷新请求回调 可重写
- *  注：如果重写了该方法不要调用[super qw_requestUpRefresh]
+ *  注：如果重写了该方法不要调用[super requestHeaderRefresh]
  */
 - (void)requestHeaderRefresh;
 
 /**
  *  尾部刷新请求回调 可重写
- *  注：如果重写了该方法不要调用[super qw_requestDropRefresh]
+ *  注：如果重写了该方法不要调用[super requestFooterRefresh]
  */
 - (void)requestFooterRefresh;
 

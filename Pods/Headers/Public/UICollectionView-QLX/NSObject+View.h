@@ -1,1 +1,0 @@
-../../../UICollectionView-QLX/UICollectionView+QLXDemo/UICollectionView+QLX/NSObject+View.h

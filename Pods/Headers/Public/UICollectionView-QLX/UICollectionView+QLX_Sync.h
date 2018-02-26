@@ -1,0 +1,1 @@
+../../../UICollectionView-QLX/UICollectionView+QLXDemo/UICollectionView+QLX/Other/sync/UICollectionView+QLX_Sync.h
