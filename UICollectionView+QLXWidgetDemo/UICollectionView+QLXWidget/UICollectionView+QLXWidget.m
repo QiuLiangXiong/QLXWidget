@@ -40,13 +40,13 @@
 
 #pragma mark - public
 
--(void) qw_reloadWidgets{
+- (void) qw_reloadWidgets{
     [self qw_syncToDataSource];
     [self reloadData];
 }
 
 
--(void)qw_collectionViewHeaderRefresh{
+- (void)qw_collectionViewHeaderRefresh{
     for (QLXWidget * widget in self.qw_widgets) {
         [widget setValue:@(true) forKey:@"needRequest"];
         [widget requestHeaderRefresh];
@@ -54,7 +54,7 @@
 }
 
 
--(void)qw_collectionViewFooterRefresh{
+- (void)qw_collectionViewFooterRefresh{
     for (QLXWidget * widget in self.qw_widgets) {
         [widget setValue:@(true) forKey:@"needRequest"];
         [widget requestFooterRefresh];
@@ -62,12 +62,12 @@
 }
 
 
--(void) qw_endRefreshingWithWidgetState:(QLXWidgetState)state{
+- (void)qw_endRefreshingWithWidgetState:(QLXWidgetState)state{
     QWAssert(false, @"need overriding");
 }
 
 
--(void) qw_reloadWidget:(QLXWidget *)widget{
+- (void)qw_reloadWidget:(QLXWidget *)widget{
 //    [self qw_reloadWidgets];
     
     if ([widget isKindOfClass:[QLXWidget class]]) {
@@ -82,10 +82,7 @@
         }else {
             [self reloadData];
         }
-        
     }
-    
-    
 }
 
 
@@ -107,6 +104,7 @@
     }
     if (self.qw_widgets.count) {
         self.qlx_dataSource = (id<QLXCollectionViewDataSource>)self;
+        [self qw_configLayout];
     }
 }
 
@@ -142,7 +140,7 @@
 
 
 
-- (QLXWidgetState) qw_state{
+- (QLXWidgetState)qw_state{
     QLXWidgetState state = QLXWidgetStateDefault;
     for (QLXWidget * widget in self.qw_widgets) {
         if (widget.state == QLXWidgetStateRequsting) {
@@ -185,6 +183,13 @@
     self.qw_sourceDataList = list;
 }
 
+- (void)qw_configLayout{
+    if ([self.collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]]) {
+        UICollectionViewFlowLayout * layout = (UICollectionViewFlowLayout *)self.collectionViewLayout;
+        layout.minimumLineSpacing = 0;
+        layout.minimumInteritemSpacing = 0;
+    }
+}
 
 /**
  *  请求数据完毕时回调
@@ -195,7 +200,7 @@
     [self performSelector:@selector(reloadAllWidgetsIfNeed) withObject:nil afterDelay:0];
 }
 
--(void)reloadAllWidgetsIfNeed{
+- (void)reloadAllWidgetsIfNeed{
     BOOL need = true;
     for (QLXWidget * widget in self.qw_widgets) {
         if (widget.state == QLXWidgetStateRequsting) {
